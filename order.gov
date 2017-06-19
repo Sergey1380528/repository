@@ -23,4 +23,103 @@ CREATE TABLE [dbo].[Order](
 
 GO
 
+///////////////////////////////
+        private void Do()
+        {
+            string strSourceFolder = @"D:\FolderName\";
+            string strDateTimeFormat = "yyyy.MM.dd HH-mm-ss";
 
+            string strContentFileNameOld = String.Empty;
+            DateTime dtFileNameOld = DateTime.MinValue;
+            //Получение предыдущего результата
+            List<string> cFiles = System.IO.Directory.GetFiles(strSourceFolder, "*.html.txt").ToList();
+            foreach (string strFileItem in cFiles)
+            {
+                try
+                {
+                    string strFile = Path.GetFileName(strFileItem);
+                    string[] cFileInfo = strFile.Substring(0, strFile.Length - ".html.txt".Length).Split('#');
+
+                    if (cFileInfo[0] != tbNumOrder.Text)
+                    {
+                        continue;
+                    }
+
+                    DateTime cDateFileInfo = DateTime.ParseExact(cFileInfo[1], strDateTimeFormat, CultureInfo.InvariantCulture);
+                    if (dtFileNameOld > cDateFileInfo)
+                    {
+                        continue;
+                    }
+
+                    dtFileNameOld = cDateFileInfo;
+                    strContentFileNameOld = strFileItem;
+
+                }
+                catch (Exception)
+                {
+                    int i = 12;
+                }
+            }
+
+　
+　
+            /////////////////////////////////////////////////////////////////////////////
+            //Сохраняем исходник документа
+            string strFileName = System.IO.Path.Combine(strSourceFolder, $"{tbNumOrder.Text}#{DateTime.Now.ToString(strDateTimeFormat)}.html");
+            System.IO.File.WriteAllText(strFileName, webBrowser1.DocumentText);
+
+　
+            //Сохраняем текст для сравнения
+            string strContentFileName = $"{strFileName}.txt";
+            webBrowser1.Document.ExecCommand("SelectAll", false, null);
+            webBrowser1.Document.ExecCommand("Copy", false, null);
+            string strContent = Clipboard.GetText();
+
+　
+            //Удаление избыточных переносов
+            strContent = strContent.Replace("\r", "\n");
+            strContent = strContent.Replace("\n ", "\n");
+            strContent = strContent.Replace(" \n", "\n");
+            for (int i = 0; i < 100; i++)
+            {
+                strContent = strContent.Replace("\n\n", "\n");
+            }
+            //Удаление отступов в начале и конце строки
+            strContent = strContent.Trim();
+
+　
+　
+            File.WriteAllText(strContentFileName, strContent);
+
+            /////////////////////////////////////////////////////
+
+            String[] linesA = File.ReadAllLines(strContentFileNameOld);
+            String[] linesB = File.ReadAllLines(strContentFileName);
+
+            IEnumerable<string> onlyB = linesB.Except(linesA);
+
+            IEnumerable<string> onlyA = linesA.Except(linesB);
+
+            List<string> cResult = new List<string>();
+
+            if (onlyB.Count() > 0)
+            {
+                cResult.Add("Есть в Б, но нет в А (изменено)");
+                cResult.AddRange(onlyB);
+            }
+
+            if (onlyA.Count() > 0)
+            {
+                cResult.Add("Есть в А, но нет в Б (удалено)");
+                cResult.Add("Есть в А, но нет в Б (удалено)");
+                cResult.AddRange(onlyA);
+            }
+
+            /*
+            0375200043317000011
+            http://zakupki.gov.ru/epz/order/notice/ea44/view/documents.html?regNumber
+            */
+
+            string strResultFileName = System.IO.Path.Combine(strSourceFolder, $"{tbNumOrder.Text}#{DateTime.Now.ToString(strDateTimeFormat)}#ResultCompare.txt");
+            File.WriteAllLines(strResultFileName, cResult);
+        }
