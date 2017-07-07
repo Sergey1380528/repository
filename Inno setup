@@ -1,1 +1,267 @@
+#define PfDestFolder "Название организации"
+#define ApplicationName "Название продукта"
+#define PluginName "Topography"  
+#define BinFolder "..\bin\"
+#define ApplicationVersion GetFileVersion("..\bin\Acad.2014\Topography.dll")
+#define AcadInstallFolder2014  "{reg:HKLM64\SOFTWARE\Autodesk\AutoCAD\R19.1\ACAD-D001:419,Location}"
+#define CivilInstallFolder2014 "{reg:HKLM64\SOFTWARE\Autodesk\AutoCAD\R19.1\ACAD-D000:419,Location}"
+#define AcadSupportFolder2014  "{reg:HKLM64\SOFTWARE\Autodesk\AutoCAD\R19.1\ACAD-D001:419,Location}\Support"
+#define CivilSupportFolder2014 "{reg:HKLM64\SOFTWARE\Autodesk\AutoCAD\R19.1\ACAD-D000:419,Location}\Support"
 
+[Setup]
+AppName={#ApplicationName}
+AppVerName={#ApplicationName} {#ApplicationVersion}
+AppVersion={#ApplicationVersion}
+VersionInfoVersion={#ApplicationVersion}
+AppId={#ApplicationName}
+AppCopyright=Copyright (C) 2017 Название организации.
+AppPublisher=Название организации
+AppMutex=acad
+DefaultDirName={pf64}\{#PfDestFolder}\{#ApplicationName}
+DisableDirPage=yes
+DefaultGroupName=Название организации\{#ApplicationName}
+ArchitecturesAllowed=x64
+OutputBaseFilename={#ApplicationName} {#ApplicationVersion} x64
+OutputDir=..\bin\Install
+Uninstallable=yes
+WizardSmallImageFile=InjGeoLogo.bmp
+WizardImageFile=InjGeoLogoBig.bmp
+LicenseFile=license.rtf
+
+
+[Languages]
+Name: "ru"; MessagesFile: "compiler:Languages\Russian.isl"      
+
+
+[Files]   
+     
+;--------------------------------------------------------------------------------
+; Шрифты
+;--------------------------------------------------------------------------------
+Source: "A431.TTF"; DestDir: "{fonts}"; FontInstall: "A431"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "BM431.TTF"; DestDir: "{fonts}"; FontInstall: "BM431"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "BO2.TTF"; DestDir: "{fonts}"; FontInstall: "BO2"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "CH122.TTF"; DestDir: "{fonts}"; FontInstall: "CH122"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "CH131.TTF"; DestDir: "{fonts}"; FontInstall: "CH131"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "CH132.TTF"; DestDir: "{fonts}"; FontInstall: "CH132"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "D231.TTF"; DestDir: "{fonts}"; FontInstall: "D231"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "D431.TTF"; DestDir: "{fonts}"; FontInstall: "D431"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "D432.TTF"; DestDir: "{fonts}"; FontInstall: "D432"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "D631.TTF"; DestDir: "{fonts}"; FontInstall: "D631"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "DO431.TTF"; DestDir: "{fonts}"; FontInstall: "DO431"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "P112.TTF"; DestDir: "{fonts}"; FontInstall: "P112"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "P131.TTF"; DestDir: "{fonts}"; FontInstall: "P131"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "P151.TTF"; DestDir: "{fonts}"; FontInstall: "P151"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "P152.TTF"; DestDir: "{fonts}"; FontInstall: "P152"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "T132.TTF"; DestDir: "{fonts}"; FontInstall: "T132"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "T1_131.TTF"; DestDir: "{fonts}"; FontInstall: "T1_131"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "T2_131.TTF"; DestDir: "{fonts}"; FontInstall: "T2_131"; Flags: onlyifdoesntexist uninsneveruninstall
+
+
+     
+;--------------------------------------------------------------------------------
+; Acad 2014
+;--------------------------------------------------------------------------------
+Source: "{#BinFolder}\Acad.2014\*"; \
+  Excludes: "*.pdb, *.xml, *.dwg, *AcadData*,*vshost*,*{#PluginName}*,*Log,*State,*.chm,*.lin"; \
+  DestDir: "{#AcadInstallFolder2014}\InjGeoShared"; \
+  Flags: replacesameversion recursesubdirs sharedfile; \
+  Check: CheckAcad2014()
+
+Source: "{#BinFolder}\Acad.2014.Install\{#PluginName}.2014.Install.dll"; \
+  DestDir: "{#AcadInstallFolder2014}\InjGeoShared"; \
+  Flags: replacesameversion;  \
+  Check: CheckAcad2014()
+
+Source: "{#BinFolder}\Acad.2014\*{#PluginName}*"; \
+  Excludes: "*.pdb, *.xml,*vshost*,*Установка*,*Install*"; \
+  DestDir: "{#AcadInstallFolder2014}\Plugins\{#PluginName}"; \
+  Flags: replacesameversion recursesubdirs ; \
+  Check: CheckAcad2014()
+
+Source: "..\Topography.Core\AcadData\*"; \
+  Excludes: "*lin, *shx,"; \
+  DestDir: "{#AcadInstallFolder2014}\Plugins\{#PluginName}\AcadData"; \
+  Flags: recursesubdirs ; \
+  Check: CheckAcad2014()
+
+Source: "..\Topography.Core\AcadData\*.*"; \
+  DestDir: "{#AcadSupportFolder2014}"; \
+  Check: CheckAcad2014()
+
+Source: "..\Topography.Tools\Resources\Video\*.wmv"; \
+  DestDir: "{#AcadInstallFolder2014}\Plugins\{#PluginName}\Resources\Video\"; \
+  Check: CheckAcad2014();
+                                                             
+Source: "..\UserManual\Руководство пользователя.chm"; \
+  DestDir: "{#AcadInstallFolder2014}\Plugins\{#PluginName}"; \
+  Check: CheckAcad2014()
+
+;--------------------------------------------------------------------------------
+; Civil 2014
+;-------------------------------------------------------------------------------
+
+Source: "{#BinFolder}\Acad.2014\*"; \
+  Excludes: "*.pdb,*.dwg, *AcadData*, *.xml,*vshost*,,*{#PluginName}*,*Log,*State,*.chm,*.lin"; \
+  DestDir: "{#CivilInstallFolder2014}\InjGeoShared"; \
+  Flags: replacesameversion recursesubdirs sharedfile; \
+  Check:CheckCivil2014()
+
+Source: "{#BinFolder}\Civil.2014.Install\{#PluginName}.Civil.2014.Install.dll"; \
+  DestDir: "{#CivilInstallFolder2014}\InjGeoShared"; \
+  Flags: replacesameversion; \
+  Check:CheckCivil2014()
+
+Source: "{#BinFolder}\Acad.2014\*{#PluginName}*"; \
+  Excludes: "*.pdb,*.xml, *.dwg, *AcadData*, *vshost*,*Установка*,*Install*"; \
+  DestDir: "{#CivilInstallFolder2014}\Plugins\{#PluginName}"; \
+  Flags: replacesameversion; \
+  Check:CheckCivil2014()
+                       
+Source: "..\Topography.Core\AcadData\*"; \
+  Excludes: "*lin, *shx,"; \
+  DestDir: "{#CivilInstallFolder2014}\Plugins\{#PluginName}\AcadData"; \
+  Flags: recursesubdirs ; \
+  Check:CheckCivil2014()
+
+Source: "..\Topography.Core\AcadData\*.*"; \
+  DestDir: "{#CivilSupportFolder2014}"; \
+  Check: CheckCivil2014()
+
+Source: "..\Topography.Tools\Resources\Video\*.wmv"; \
+  DestDir: "{#CivilInstallFolder2014}\Plugins\{#PluginName}\Resources\Video\"; \
+  Check: CheckCivil2014();
+                                                             
+Source: "..\UserManual\Руководство пользователя.chm"; \
+  DestDir: "{#CivilInstallFolder2014}\Plugins\{#PluginName}"; \
+  Check: CheckCivil2014()
+
+;--------------------------------------------------------------------------------
+; Общие ресурсы
+;--------------------------------------------------------------------------------
+
+;Source: "{#BinFolder}\chm\*.chm"; \
+DestDir: "{#AcadInstallFolder2014}\Plugins\{#PluginName}\chm"; \
+Flags: replacesameversion;
+
+;--------------------------------------------------------------------------------
+
+ 
+
+[Icons]
+Name: "{group}\Деинсталлировать {#ApplicationName}"; \
+  Filename: "{pf64}\{#PfDestFolder}\{#ApplicationName}\unins000.exe";
+
+;Name: "{group}\Руководство_пользователя"; \
+Filename: "{pf64}\{#PfDestFolder}\{#ApplicationName}\Руководство_пользователя.pdf";
+
+
+
+[Run]   
+
+Filename: "{win}\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe"; \
+  Flags: runhidden;  StatusMsg: "Регистрация и настройка плагина для Acad 2014..."; \
+  Parameters: """{#AcadInstallFolder2014}\InjGeoShared\{#PluginName}.2014.Install.dll""" ; \
+  Check: CheckAcad2014()
+
+Filename: "{win}\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe"; \
+  Flags: runhidden; \
+  StatusMsg: "Регистрация и настройка плагина для Civil 2014..."; \
+  Parameters: """{#CivilInstallFolder2014}\InjGeoShared\{#PluginName}.Civil.2014.Install.dll""" ; \
+  Check:CheckCivil2014()
+
+
+
+[UninstallRun]          
+
+Filename: "{win}\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe"; \
+  Flags: runhidden; \
+  StatusMsg: "Регистрация и настройка плагина для Acad 2014..."; \
+  Parameters: "/uninstall ""{#AcadInstallFolder2014}\InjGeoShared\{#PluginName}.2014.Install.dll"""; \
+  Check: CheckAcad2014()
+
+Filename: "{win}\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe"; \
+  Flags: runhidden; \
+  StatusMsg: "Регистрация и настройка плагина для Civil 2014..."; \
+  Parameters: "/uninstall ""{#CivilInstallFolder2014}\InjGeoShared\{#PluginName}.Civil.2014.Install.dll"""; \
+  Check:CheckCivil2014()
+
+
+
+[Code]
+//Функция выполняет проверку наличия установленного продкута AutoCAD 2014
+function CheckAcad2014():Boolean;
+begin
+  
+   Result := RegKeyExists(HKLM64, 'SOFTWARE\Autodesk\AutoCAD\R19.1\ACAD-D001:419');
+
+   if(Result=True) then
+   begin
+      Log('Обнаружен AutoCAD 2014');
+   end
+   else
+   begin 
+      Log('Не обнаружен AutoCAD 2014');
+   end
+   
+  
+end;
+
+//Функция выполняет проверку наличия установленного продкута Civil 2014
+function CheckCivil2014():Boolean;
+begin
+  
+   Result := RegKeyExists(HKLM64, 'SOFTWARE\Autodesk\AutoCAD\R19.1\ACAD-D000:419');
+   if(Result=True) then
+   begin
+      Log('Обнаружен Civil 2014');
+   end
+   else
+   begin 
+      Log('Не обнаружен Civil 2014');
+   end
+  
+end;
+
+//Обрабоотчик сообщения.
+//выполняет проверку готовности системы к установке плагина, в частонсти
+//он проверяет наличие AutoCAD 2014 или Civil 2014.
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+begin
+  
+  if(CheckAcad2014 = False) then
+  begin
+
+    if(CheckCivil2014 = False) then
+    begin
+
+      Result:='Не возможно выполнить установку, так как на компьютере не установлены AutoCAD 2014 или Civil 2014';
+
+    end
+
+  end
+  else
+  begin
+
+    Result:='';
+
+  end
+  
+  NeedsRestart := False;
+
+end;
+
+[Code]
+procedure InitializeWizard;
+begin
+  with TNewStaticText.Create(WizardForm) do
+  begin
+    Parent := WizardForm.FilenameLabel.Parent;
+    Left := WizardForm.FilenameLabel.Left;
+    Top := WizardForm.FilenameLabel.Top;
+    Width := WizardForm.FilenameLabel.Width;
+    Height := WizardForm.FilenameLabel.Height;
+    Caption := '';
+  end;
+  WizardForm.FilenameLabel.Visible := False;
+end;
