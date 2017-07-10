@@ -1,3 +1,4 @@
+<!--
 http://zakupki.gov.ru/epz/order/notice/ea44/view/documents.html?regNumber=0534600011617000001
 Основной контейнер
 <div class="contentTabBoxBlock">
@@ -20,7 +21,7 @@ http://zakupki.gov.ru/epz/order/notice/ea44/view/documents.html?regNumber=053460
    <tr class="">
     <td style="white-space: nowrap; vertical-align: top; padding-right: 0">
      <a title="Печатная форма" class="printForm" href="/epz/order/notice/printForm/view.html?printFormId=44464291" target="_blank"></a>              <a href="http://zakupki.gov.ru/44fz/filestore/public/1.0/download/priz/file.html?uid=53A1BA29634A00BAE0530A86121F1169" title="Ответ на запрос разъяснений Тангуй.docx (14.98 Кб)">Ответ на запрос разъяснений Тангуй</a>
-
+-->
 
 
 
