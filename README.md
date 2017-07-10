@@ -1,4 +1,6 @@
 
+                //https://github.com/jamietre/CsQuery/
+                
                 List<IG_DocumentItem> cDocuments = new List<IG_DocumentItem>();
 
                 //todo убрать костыль, решить проблему с кодировкой m_strHtml
